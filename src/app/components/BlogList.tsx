@@ -46,7 +46,7 @@ const BlogList = () => {
   return (
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
       <h1 className="text-2xl font-semibold text-gray-800 text-center mb-6">
-        To-Do Style Blog
+        Blog App
       </h1>
       
       {/* Add New Post */}
