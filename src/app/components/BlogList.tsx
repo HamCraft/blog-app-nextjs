@@ -2,6 +2,9 @@
 
 import { useAuth } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 type Post = {
   _id: string;
@@ -115,85 +118,87 @@ const BlogList = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <h1 className="text-4xl font-bold text-white text-center mb-10">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-900 min-h-screen">
+      <h1 className="text-3xl sm:text-4xl font-bold text-white text-center mb-8">
         My Blog Posts
       </h1>
 
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md mb-6" role="alert">
           <span className="block sm:inline">{error}</span>
         </div>
       )}
 
       {/* Add New Post */}
-      <div className="mb-10">
-        <textarea
-          value={newPost}
-          onChange={(e) => setNewPost(e.target.value)}
-          placeholder="Write a new post..."
-          className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-white resize-none"
-          rows={4}
-        />
-        <button
-          onClick={handleAddPost}
-          className="mt-4 px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 ease-in-out transform hover:-translate-y-1"
-        >
-          Add Post
-        </button>
-      </div>
+      <Card className="mb-8 bg-gray-800 border-gray-700">
+        <CardHeader>
+          <CardTitle className="text-white text-xl">Create a New Post</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Textarea
+            value={newPost}
+            onChange={(e) => setNewPost(e.target.value)}
+            placeholder="Write a new post..."
+            className="w-full px-4 py-3 bg-gray-700 text-white border-gray-600 focus:border-blue-500 focus:ring-blue-500 rounded-md resize-none"
+            rows={4}
+          />
+        </CardContent>
+        <CardFooter>
+          <Button onClick={handleAddPost} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+            Add Post
+          </Button>
+        </CardFooter>
+      </Card>
 
       {/* Posts List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="space-y-6">
         {posts.map((post) => (
-          <div
-            key={post._id}
-            className="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-xl "
-          >
-            {editingPostId === post._id ? (
-              <div className="p-6">
-                <textarea
+          <Card key={post._id} className="bg-gray-800 text-white border-gray-700 shadow-md hover:shadow-lg transition-shadow duration-300">
+            <CardHeader>
+              <CardTitle className="text-xl font-semibold">Blog Post</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {editingPostId === post._id ? (
+                <Textarea
                   value={editingContent}
                   onChange={(e) => setEditingContent(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-700 text-white resize-none"
+                  className="w-full px-4 py-3 bg-gray-700 text-white border-gray-600 focus:border-blue-500 focus:ring-blue-500 rounded-md resize-none"
                   rows={4}
                 />
-                <button
-                  onClick={() => handleEditPost(post._id)}
-                  className="mt-4 px-4 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-300 ease-in-out"
-                >
+              ) : (
+                <p className="text-gray-300 whitespace-pre-wrap break-words">{post.content}</p>
+              )}
+            </CardContent>
+            <CardFooter className="flex flex-wrap justify-end gap-2">
+              {editingPostId === post._id ? (
+                <Button onClick={() => handleEditPost(post._id)} variant="secondary" className="bg-green-600 hover:bg-green-700 text-white">
                   Save
-                </button>
-              </div>
-            ) : (
-              <div className="p-6">
-                <p className="text-white text-lg mb-4">{post.content}</p>
-                <div className="flex justify-end space-x-2">
-                  <button
+                </Button>
+              ) : (
+                <>
+                  <Button
                     onClick={() => {
                       setEditingPostId(post._id);
                       setEditingContent(post.content);
                     }}
-                    className="px-4 py-2 bg-yellow-500 text-white font-medium rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition duration-300 ease-in-out"
+                    variant="secondary"
+                    className="bg-yellow-600 hover:bg-yellow-700 text-white"
                   >
                     Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeletePost(post._id)}
-                    className="px-4 py-2 bg-red-500 text-white font-medium rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-300 ease-in-out"
-                  >
+                  </Button>
+                  <Button onClick={() => handleDeletePost(post._id)} variant="destructive" className="bg-red-600 hover:bg-red-700 text-white">
                     Delete
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+                  </Button>
+                </>
+              )}
+            </CardFooter>
+          </Card>
         ))}
       </div>
 
       {/* No Posts Message */}
       {posts.length === 0 && (
-        <p className="text-gray-400 text-center mt-10 text-xl">
+        <p className="text-gray-400 text-center mt-8 text-xl">
           No posts yet. Add one to get started!
         </p>
       )}

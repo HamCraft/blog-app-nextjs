@@ -11,6 +11,9 @@ export default function ViewBlogs() {
       }
     
   return (
+    <div>
+      <h1 className='text-white text-center mt-10 text-4xl'>Sign In To Create A Blog Post!</h1>
    <AllBlogPosts/>
+   </div>
   )
 }
